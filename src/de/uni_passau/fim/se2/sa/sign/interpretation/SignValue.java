@@ -52,8 +52,7 @@ public enum SignValue implements Value {
   }
 
   public static boolean isZero(final SignValue pValue) {
-    // TODO Implement me
-    throw new UnsupportedOperationException("Implement me");
+    return pValue == ZERO;
   }
 
   public static boolean isMaybeZero(final SignValue pValue) {
