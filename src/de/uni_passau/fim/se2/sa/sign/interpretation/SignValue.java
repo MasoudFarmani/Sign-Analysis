@@ -67,7 +67,9 @@ public enum SignValue implements Value {
   }
 
   public static boolean isMaybeNegative(final SignValue pValue) {
-    // TODO Implement me
-    throw new UnsupportedOperationException("Implement me");
+    return pValue == MINUS ||
+            pValue == ZERO_MINUS ||
+            pValue == PLUS_MINUS ||
+            pValue == TOP;
   }
 }
