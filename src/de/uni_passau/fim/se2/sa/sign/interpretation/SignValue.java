@@ -33,13 +33,14 @@ public enum SignValue implements Value {
     return repr;
   }
 
+
+  // @see file:LLM/SignValue-Prompts.md
   public SignValue join(final SignValue pOther) {
     Preconditions.checkState(
         this != UNINITIALIZED_VALUE && pOther != UNINITIALIZED_VALUE,
         "Dummy shall not be used as a value.");
 
-    // TODO Implement me
-    throw new UnsupportedOperationException("Implement me");
+    return SignValue.values()[this.ordinal() | pOther.ordinal()];
   }
 
   /*
