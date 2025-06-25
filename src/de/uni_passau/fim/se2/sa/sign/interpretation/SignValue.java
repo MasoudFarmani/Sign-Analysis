@@ -42,13 +42,15 @@ public enum SignValue implements Value {
     throw new UnsupportedOperationException("Implement me");
   }
 
+  /*
+   * @see file:LLM/SignValue-Prompts.md
+   */
   public boolean isLessOrEqual(final SignValue pOther) {
     Preconditions.checkState(
         this != UNINITIALIZED_VALUE && pOther != UNINITIALIZED_VALUE,
         "Dummy shall not be used as a value.");
 
-    // TODO Implement me
-    throw new UnsupportedOperationException("Implement me");
+    return (this.ordinal() & pOther.ordinal()) == this.ordinal();
   }
 
   public static boolean isZero(final SignValue pValue) {
