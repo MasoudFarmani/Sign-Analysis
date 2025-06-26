@@ -61,7 +61,8 @@ public class SignTransferRelation implements TransferRelation {
     }
 
     private SignValue evaluateSub(SignValue left, SignValue right) {
-        return null;
+        SignValue negatedRight = evaluate(Operation.NEG, right);
+        return evaluateAdd(left, negatedRight);
     }
 
     private SignValue evaluateAdd(SignValue left, SignValue right) {
