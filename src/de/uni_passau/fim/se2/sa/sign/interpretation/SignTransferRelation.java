@@ -57,7 +57,34 @@ public class SignTransferRelation implements TransferRelation {
     }
 
     private SignValue evaluateMul(SignValue left, SignValue right) {
-        return null;
+        return switch (left){
+            case PLUS -> right;
+            case MINUS -> evaluate(Operation.NEG, right);
+            case ZERO -> SignValue.ZERO;
+            case ZERO_PLUS -> switch(right){
+                case PLUS, ZERO, ZERO_PLUS -> SignValue.ZERO_PLUS;
+                case MINUS, ZERO_MINUS -> SignValue.ZERO_MINUS;
+                case PLUS_MINUS, TOP -> SignValue.TOP;
+                default -> SignValue.BOTTOM;
+            };
+            case ZERO_MINUS -> switch (right){
+                case PLUS, ZERO_PLUS -> SignValue.ZERO_MINUS;
+                case MINUS, ZERO, ZERO_MINUS -> SignValue.ZERO_PLUS;
+                case PLUS_MINUS, TOP -> SignValue.TOP;
+                default -> SignValue.BOTTOM;
+            };
+            case PLUS_MINUS -> switch (right){
+                case ZERO -> SignValue.ZERO;
+                case PLUS, MINUS, PLUS_MINUS -> SignValue.PLUS_MINUS;
+                case ZERO_MINUS, ZERO_PLUS, TOP -> SignValue.TOP;
+                default -> SignValue.BOTTOM;
+            };
+            case TOP -> switch (right){
+                case ZERO -> SignValue.ZERO;
+                default -> SignValue.TOP;
+            };
+            default -> SignValue.BOTTOM;
+        };
     }
 
     private SignValue evaluateSub(SignValue left, SignValue right) {
