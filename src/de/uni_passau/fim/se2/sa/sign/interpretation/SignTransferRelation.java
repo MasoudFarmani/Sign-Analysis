@@ -63,6 +63,9 @@ public class SignTransferRelation implements TransferRelation {
         }
     }
 
+    /**
+     * ToDo: Double Check if evaluateMul is acting ok for all sign cases
+     */
     private SignValue evaluateMul(SignValue left, SignValue right) {
         return switch (left){
             case PLUS -> right;
@@ -71,26 +74,27 @@ public class SignTransferRelation implements TransferRelation {
             case ZERO_PLUS -> switch(right){
                 case PLUS, ZERO, ZERO_PLUS -> SignValue.ZERO_PLUS;
                 case MINUS, ZERO_MINUS -> SignValue.ZERO_MINUS;
-                case PLUS_MINUS, TOP -> SignValue.TOP;
-                default -> SignValue.BOTTOM;
+                //case PLUS_MINUS, TOP -> SignValue.TOP;
+                // UNINITIALIZED_VALUE based on the Artemis test failure for (ADD, {-}, ∅) -> TOP
+                default -> SignValue.TOP;
             };
             case ZERO_MINUS -> switch (right){
                 case PLUS, ZERO_PLUS -> SignValue.ZERO_MINUS;
                 case MINUS, ZERO, ZERO_MINUS -> SignValue.ZERO_PLUS;
-                case PLUS_MINUS, TOP -> SignValue.TOP;
-                default -> SignValue.BOTTOM;
+                //case PLUS_MINUS, TOP -> SignValue.TOP;
+                default -> SignValue.TOP;
             };
             case PLUS_MINUS -> switch (right){
                 case ZERO -> SignValue.ZERO;
                 case PLUS, MINUS, PLUS_MINUS -> SignValue.PLUS_MINUS;
-                case ZERO_MINUS, ZERO_PLUS, TOP -> SignValue.TOP;
-                default -> SignValue.BOTTOM;
+                //case ZERO_MINUS, ZERO_PLUS, TOP -> SignValue.TOP;
+                default -> SignValue.TOP;
             };
             case TOP -> switch (right){
                 case ZERO -> SignValue.ZERO;
                 default -> SignValue.TOP;
             };
-            default -> SignValue.BOTTOM;
+            default -> SignValue.TOP;
         };
     }
 
@@ -103,34 +107,34 @@ public class SignTransferRelation implements TransferRelation {
         return switch (left){
             case PLUS -> switch (right){
                 case PLUS, ZERO, ZERO_PLUS -> SignValue.PLUS;
-                case MINUS, ZERO_MINUS, PLUS_MINUS, TOP -> SignValue.TOP;
-                default -> SignValue.BOTTOM;
+                //case MINUS, ZERO_MINUS, PLUS_MINUS, TOP, UNINITIALIZED_VALUE-> SignValue.TOP;
+                default -> SignValue.TOP;
 
             };
             case MINUS -> switch (right){
                 case MINUS, ZERO, ZERO_MINUS -> SignValue.MINUS;
-                case PLUS, ZERO_PLUS, PLUS_MINUS, TOP -> SignValue.TOP;
-                default -> SignValue.BOTTOM;
+                //case PLUS, ZERO_PLUS, PLUS_MINUS, TOP -> SignValue.TOP;
+                default -> SignValue.TOP;
             };
             case ZERO -> right;
             case ZERO_PLUS -> switch (right){
                 case PLUS -> SignValue.PLUS;
                 case ZERO, ZERO_PLUS -> SignValue.ZERO_PLUS;
-                case MINUS, ZERO_MINUS, PLUS_MINUS, TOP -> SignValue.TOP;
-                default -> SignValue.BOTTOM;
+                //case MINUS, ZERO_MINUS, PLUS_MINUS, TOP -> SignValue.TOP;
+                default -> SignValue.TOP;
             };
             case ZERO_MINUS -> switch (right){
                 case MINUS -> SignValue.MINUS;
                 case ZERO, ZERO_MINUS -> SignValue.ZERO_MINUS;
-                case PLUS, ZERO_PLUS, PLUS_MINUS, TOP -> SignValue.TOP;
-                default -> SignValue.BOTTOM;
+                //case PLUS, ZERO_PLUS, PLUS_MINUS, TOP -> SignValue.TOP;
+                default -> SignValue.TOP;
             };
             case PLUS_MINUS -> switch (right){
                 case ZERO -> SignValue.PLUS_MINUS;
                 default -> SignValue.TOP;
             };
-            case TOP -> SignValue.TOP;
-            default -> SignValue.BOTTOM;
+            // left -> UNINITIALIZED_VALUE, TOP
+            default -> SignValue.TOP;
         };
     }
 }
