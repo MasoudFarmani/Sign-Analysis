@@ -69,7 +69,10 @@ public class SignTransferRelation implements TransferRelation {
     private SignValue evaluateMul(SignValue left, SignValue right) {
         return switch (left){
             case PLUS -> right;
-            case MINUS -> evaluate(Operation.NEG, right);
+            case MINUS -> switch (right){
+                case UNINITIALIZED_VALUE -> SignValue.TOP;
+                default -> evaluate(Operation.NEG, right);
+            };
             case ZERO -> SignValue.ZERO;
             case ZERO_PLUS -> switch(right){
                 case PLUS, ZERO, ZERO_PLUS -> SignValue.ZERO_PLUS;
