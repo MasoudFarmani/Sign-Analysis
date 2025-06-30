@@ -5,6 +5,14 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SignValueTest {
+
+    @Test
+    public void testGetSize() {
+        for (SignValue signValue : SignValue.values()) {
+            assertEquals(1, signValue.getSize());
+        }
+    }
+
     @Test
     void testSignValueJoin() {
         for (SignValue signValue : SignValue.values()) {
@@ -15,6 +23,9 @@ public class SignValueTest {
                     () -> signValue.join(SignValue.UNINITIALIZED_VALUE)
             );
         }
+        assertThrows(IllegalStateException.class,
+                () -> SignValue.UNINITIALIZED_VALUE.join(SignValue.UNINITIALIZED_VALUE)
+        );
 
         assertEquals(SignValue.PLUS_MINUS, SignValue.PLUS.join(SignValue.MINUS));
         assertEquals(SignValue.PLUS_MINUS, SignValue.MINUS.join(SignValue.PLUS));
@@ -81,6 +92,10 @@ public class SignValueTest {
     @Test
     void testIsZero() {
         assertTrue(SignValue.isZero(SignValue.ZERO));
+        for (SignValue signValue : SignValue.values()) {
+            if (signValue == SignValue.ZERO) continue;
+            assertFalse(SignValue.isZero(signValue));
+        }
     }
 
     @Test
@@ -88,12 +103,22 @@ public class SignValueTest {
         assertTrue(SignValue.isMaybeZero(SignValue.ZERO));
         assertTrue(SignValue.isMaybeZero(SignValue.ZERO_MINUS));
         assertTrue(SignValue.isMaybeZero(SignValue.ZERO_PLUS));
+        assertTrue(SignValue.isMaybeZero(SignValue.TOP));
+
         assertFalse(SignValue.isMaybeZero(SignValue.PLUS_MINUS));
+        assertFalse(SignValue.isMaybeZero(SignValue.BOTTOM));
+        assertFalse(SignValue.isMaybeZero(SignValue.UNINITIALIZED_VALUE));
+        assertFalse(SignValue.isMaybeZero(SignValue.PLUS));
+        assertFalse(SignValue.isMaybeZero(SignValue.MINUS));
     }
 
     @Test
     void testisNegative() {
         assertTrue(SignValue.isNegative(SignValue.MINUS));
+        for (SignValue signValue : SignValue.values()) {
+            if (signValue == SignValue.MINUS) continue;
+            assertFalse(SignValue.isNegative(signValue));
+        }
     }
 
     @Test
@@ -101,6 +126,12 @@ public class SignValueTest {
         assertTrue(SignValue.isMaybeNegative(SignValue.MINUS));
         assertTrue(SignValue.isMaybeNegative(SignValue.ZERO_MINUS));
         assertTrue(SignValue.isMaybeNegative(SignValue.PLUS_MINUS));
+        assertTrue(SignValue.isMaybeNegative(SignValue.TOP));
+
         assertFalse(SignValue.isMaybeNegative(SignValue.PLUS));
+        assertFalse(SignValue.isMaybeNegative(SignValue.UNINITIALIZED_VALUE));
+        assertFalse(SignValue.isMaybeNegative(SignValue.ZERO));
+        assertFalse(SignValue.isMaybeNegative(SignValue.ZERO_PLUS));
+        assertFalse(SignValue.isMaybeNegative(SignValue.BOTTOM));
     }
 }
