@@ -52,6 +52,10 @@ public class SignTransferRelationTest {
                 transferRelation.evaluate(TransferRelation.Operation.ADD, SignValue.MINUS, SignValue.UNINITIALIZED_VALUE)
         );
         assertEquals(
+                SignValue.TOP,
+                transferRelation.evaluate(TransferRelation.Operation.ADD, SignValue.ZERO, SignValue.UNINITIALIZED_VALUE)
+        );
+        assertEquals(
                 SignValue.PLUS_MINUS,
                 transferRelation.evaluate(TransferRelation.Operation.SUB, SignValue.ZERO, SignValue.PLUS_MINUS)
         );

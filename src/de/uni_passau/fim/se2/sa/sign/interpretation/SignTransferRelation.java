@@ -116,7 +116,10 @@ public class SignTransferRelation implements TransferRelation {
                 //case PLUS, ZERO_PLUS, PLUS_MINUS, TOP -> SignValue.TOP;
                 default -> SignValue.TOP;
             };
-            case ZERO -> right;
+            case ZERO -> switch (right){
+                case UNINITIALIZED_VALUE -> SignValue.TOP;
+                default -> right;
+            };
             case ZERO_PLUS -> switch (right){
                 case PLUS -> SignValue.PLUS;
                 case ZERO, ZERO_PLUS -> SignValue.ZERO_PLUS;
