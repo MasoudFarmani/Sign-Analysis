@@ -1,6 +1,5 @@
 package de.uni_passau.fim.se2.sa.sign.interpretation;
 
-import org.jgrapht.alg.util.Pair;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -11,6 +10,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SignTransferRelationTest {
+
+    public record Pair<L, R>(L left, R right) {
+        public static <L, R> Pair<L, R> of(L left, R right) {
+            return new Pair<>(left, right);
+        }
+    }
 
     @Test
     public void testEvaluateValue() {
@@ -92,7 +97,7 @@ public class SignTransferRelationTest {
                 entry(Pair.of(PLUS_MINUS, MINUS), TOP)
         );
         for (var entry : testCasesAdd.entrySet()) {
-            assertEquals(entry.getValue(), transferRelation.evaluate(TransferRelation.Operation.ADD, entry.getKey().getFirst(), entry.getKey().getSecond()));
+            assertEquals(entry.getValue(), transferRelation.evaluate(TransferRelation.Operation.ADD, entry.getKey().left, entry.getKey().right));
         }
     }
 
@@ -175,7 +180,7 @@ public class SignTransferRelationTest {
         );
 
         for (var entry : testCasesMul.entrySet()) {
-            assertEquals(entry.getValue(), transferRelation.evaluate(TransferRelation.Operation.MUL, entry.getKey().getFirst(), entry.getKey().getSecond()));
+            assertEquals(entry.getValue(), transferRelation.evaluate(TransferRelation.Operation.MUL, entry.getKey().left, entry.getKey().right));
         }
     }
 
@@ -234,7 +239,7 @@ public class SignTransferRelationTest {
         );
 
         for (var entry : testCasesMul.entrySet()) {
-            assertEquals(entry.getValue(), transferRelation.evaluate(TransferRelation.Operation.DIV, entry.getKey().getFirst(), entry.getKey().getSecond()));
+            assertEquals(entry.getValue(), transferRelation.evaluate(TransferRelation.Operation.DIV, entry.getKey().left, entry.getKey().right));
         }
 
     }
