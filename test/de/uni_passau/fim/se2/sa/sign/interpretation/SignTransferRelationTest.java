@@ -99,6 +99,10 @@ public class SignTransferRelationTest {
                 transferRelation.evaluate(TransferRelation.Operation.DIV, SignValue.PLUS, SignValue.ZERO_MINUS)
         );
         assertEquals(
+                SignValue.BOTTOM,
+                transferRelation.evaluate(TransferRelation.Operation.DIV, SignValue.MINUS, SignValue.ZERO)
+        );
+        assertEquals(
                 SignValue.TOP,
                 transferRelation.evaluate(TransferRelation.Operation.DIV, SignValue.UNINITIALIZED_VALUE, SignValue.ZERO_MINUS)
         );
