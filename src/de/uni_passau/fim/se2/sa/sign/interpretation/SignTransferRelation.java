@@ -66,7 +66,7 @@ public class SignTransferRelation implements TransferRelation {
             };
             case ZERO -> SignValue.ZERO;
             case ZERO_PLUS -> evaluateDiv(SignValue.PLUS, right);
-            case ZERO_MINUS -> evaluateDiv(SignValue.MINUS, left);
+            case ZERO_MINUS -> evaluateDiv(SignValue.MINUS, right);
             default -> SignValue.TOP;
         };
     }
