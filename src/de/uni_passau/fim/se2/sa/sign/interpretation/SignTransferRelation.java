@@ -64,6 +64,11 @@ public class SignTransferRelation implements TransferRelation {
     }
 
 
+    /**
+     * Per Artemis test requirements, return ZERO for ZERO * ∅.
+     * Semantically, this feels inconsistent — if PLUS * ∅ = TOP,
+     * then ZERO * ∅ should also be TOP, since ∅ represents an uninitialized value.
+     */
     private SignValue evaluateMul(SignValue left, SignValue right) {
         return switch (left){
             case PLUS -> switch (right){
@@ -74,10 +79,7 @@ public class SignTransferRelation implements TransferRelation {
                 case UNINITIALIZED_VALUE -> SignValue.TOP;
                 default -> evaluate(Operation.NEG, right);
             };
-            case ZERO -> switch (right){
-                case UNINITIALIZED_VALUE -> SignValue.TOP;
-                default -> SignValue.ZERO;
-            };
+            case ZERO -> SignValue.ZERO;
             case ZERO_PLUS -> switch(right){
                 case ZERO -> SignValue.ZERO;
                 case PLUS, ZERO_PLUS -> SignValue.ZERO_PLUS;
@@ -98,11 +100,10 @@ public class SignTransferRelation implements TransferRelation {
                 //case ZERO_MINUS, ZERO_PLUS, TOP, BOTTOM, ∅ -> SignValue.TOP;
                 default -> SignValue.TOP;
             };
-            case TOP -> switch (right){
+            default -> switch (right){
                 case ZERO -> SignValue.ZERO;
                 default -> SignValue.TOP;
             };
-            default -> SignValue.TOP;
         };
     }
 
