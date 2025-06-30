@@ -24,9 +24,8 @@ public class SignTransferRelationTest {
         assertThrows(IllegalStateException.class,
                 () -> transferRelation.evaluate(TransferRelation.Operation.ADD, null)
         );
-        assertThrows(IllegalArgumentException.class,
-                () -> transferRelation.evaluate(TransferRelation.Operation.NEG, SignValue.UNINITIALIZED_VALUE)
-        );
+
+        assertEquals(SignValue.UNINITIALIZED_VALUE, transferRelation.evaluate(TransferRelation.Operation.NEG, SignValue.UNINITIALIZED_VALUE));
         assertEquals(SignValue.BOTTOM, transferRelation.evaluate(TransferRelation.Operation.NEG, SignValue.BOTTOM));
         assertEquals(SignValue.MINUS, transferRelation.evaluate(TransferRelation.Operation.NEG, SignValue.PLUS));
         assertEquals(SignValue.PLUS, transferRelation.evaluate(TransferRelation.Operation.NEG, SignValue.MINUS));

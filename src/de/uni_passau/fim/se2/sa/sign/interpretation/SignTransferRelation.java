@@ -16,15 +16,11 @@ public class SignTransferRelation implements TransferRelation {
     Preconditions.checkState(pOperation == Operation.NEG);
     Preconditions.checkNotNull(pValue);
     return switch (pValue){
-      case BOTTOM -> SignValue.BOTTOM;
-      case TOP -> SignValue.TOP;
       case MINUS -> SignValue.PLUS;
-      case ZERO -> SignValue.ZERO;
       case PLUS -> SignValue.MINUS;
       case ZERO_MINUS -> SignValue.ZERO_PLUS;
       case ZERO_PLUS -> SignValue.ZERO_MINUS;
-      case PLUS_MINUS -> SignValue.PLUS_MINUS;
-      default -> throw new IllegalArgumentException("Invalid sign value");
+      default -> pValue; // bottom/top/uninitialized/zero/plus_minus
     };
   }
 
