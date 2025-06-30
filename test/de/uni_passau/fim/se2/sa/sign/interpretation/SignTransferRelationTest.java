@@ -91,16 +91,24 @@ public class SignTransferRelationTest {
                 transferRelation.evaluate(TransferRelation.Operation.DIV, SignValue.ZERO, SignValue.PLUS_MINUS)
         );
         assertEquals(
-                SignValue.TOP,
+                SignValue.ZERO,
                 transferRelation.evaluate(TransferRelation.Operation.DIV, SignValue.ZERO, SignValue.TOP)
         );
         assertEquals(
-                SignValue.TOP,
+                SignValue.ZERO_MINUS,
                 transferRelation.evaluate(TransferRelation.Operation.DIV, SignValue.PLUS, SignValue.ZERO_MINUS)
         );
         assertEquals(
-                transferRelation.evaluate(TransferRelation.Operation.DIV, SignValue.MINUS, SignValue.MINUS),
-                transferRelation.evaluate(TransferRelation.Operation.MUL, SignValue.MINUS, SignValue.MINUS)
+                SignValue.TOP,
+                transferRelation.evaluate(TransferRelation.Operation.DIV, SignValue.UNINITIALIZED_VALUE, SignValue.ZERO_MINUS)
+        );
+        assertEquals(
+                SignValue.TOP,
+                transferRelation.evaluate(TransferRelation.Operation.DIV, SignValue.PLUS, SignValue.UNINITIALIZED_VALUE)
+        );
+        assertEquals(
+                SignValue.ZERO_PLUS,
+                transferRelation.evaluate(TransferRelation.Operation.DIV, SignValue.MINUS, SignValue.MINUS)
         );
         assertEquals(
                 SignValue.TOP,

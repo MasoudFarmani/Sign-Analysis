@@ -48,19 +48,27 @@ public class SignTransferRelation implements TransferRelation {
     };
   }
 
-    /**
-     * I'm over approximating in the cases that the divisor definitely/maybe is ZERO,
-     * ToDo: though I'm not sure about this approach, I'm keeping it -- Double Check!
-     */
+
     private SignValue evaluateDiv(SignValue left, SignValue right) {
-        switch (right){
-            case ZERO, ZERO_MINUS, ZERO_PLUS, TOP -> {
-                return SignValue.TOP;
-            }
-            default -> {
-                return evaluateMul(left, right);
-            }
-        }
+        return switch (left){
+            case PLUS -> switch (right){
+                case PLUS, ZERO_PLUS -> SignValue.ZERO_PLUS;
+                case MINUS, ZERO_MINUS -> SignValue.ZERO_MINUS;
+                default -> SignValue.TOP;
+            };
+            case MINUS -> switch (right){
+                case PLUS, ZERO_PLUS -> SignValue.ZERO_MINUS;
+                case MINUS, ZERO_MINUS -> SignValue.ZERO_PLUS;
+                default -> SignValue.TOP;
+            };
+            case ZERO -> switch (right){
+                case ZERO -> SignValue.TOP;
+                default -> SignValue.ZERO;
+            };
+            case ZERO_PLUS -> evaluateDiv(SignValue.PLUS, right);
+            case ZERO_MINUS -> evaluateDiv(SignValue.MINUS, left);
+            default -> SignValue.TOP;
+        };
     }
 
 
