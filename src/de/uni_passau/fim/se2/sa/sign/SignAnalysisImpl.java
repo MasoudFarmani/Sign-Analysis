@@ -122,10 +122,17 @@ public class SignAnalysisImpl implements SignAnalysis {
     return false;
   }
 
+  /*
+  For IALOAD: stack has [..., index]
+  For IASTORE: stack has [..., index, value]
+   */
   private boolean isNegativeArrayIndex(
       final AbstractInsnNode pInstruction, final Frame<SignValue> pFrame) {
-    // TODO Implement me
-    throw new UnsupportedOperationException("Implement me");
+    if (pInstruction.getOpcode() == Opcodes.IALOAD || pInstruction.getOpcode() == Opcodes.IASTORE) {
+      SignValue index = pFrame.getStack(pFrame.getStackSize() - (pInstruction.getOpcode() == Opcodes.IASTORE ? 2 : 1));
+      return SignValue.isNegative(index);
+    }
+    return false;
   }
 
   private boolean isMaybeNegativeArrayIndex(
