@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.LineNumberNode;
@@ -105,8 +106,11 @@ public class SignAnalysisImpl implements SignAnalysis {
   }
 
   private boolean isDivByZero(final AbstractInsnNode pInstruction, final Frame<SignValue> pFrame) {
-    // TODO Implement me
-    throw new UnsupportedOperationException("Implement me");
+    if (pInstruction.getOpcode() == Opcodes.IDIV) {
+      SignValue divisor = pFrame.getStack(pFrame.getStackSize() - 1);
+      return SignValue.isZero(divisor);
+    }
+    return false;
   }
 
   private boolean isMaybeDivByZero(
