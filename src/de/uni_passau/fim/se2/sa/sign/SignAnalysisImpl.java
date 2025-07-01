@@ -137,8 +137,11 @@ public class SignAnalysisImpl implements SignAnalysis {
 
   private boolean isMaybeNegativeArrayIndex(
       final AbstractInsnNode pInstruction, final Frame<SignValue> pFrame) {
-    // TODO Implement me
-    throw new UnsupportedOperationException("Implement me");
+    if (pInstruction.getOpcode() == Opcodes.IALOAD || pInstruction.getOpcode() == Opcodes.IASTORE) {
+      SignValue index = pFrame.getStack(pFrame.getStackSize() - (pInstruction.getOpcode() == Opcodes.IASTORE ? 2 : 1));
+      return SignValue.isMaybeNegative(index) && !SignValue.isNegative(index);
+    }
+    return false;
   }
 
   private record Pair<K, V>(K key, V value) {
