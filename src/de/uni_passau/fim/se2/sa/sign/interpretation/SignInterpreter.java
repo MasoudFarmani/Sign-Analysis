@@ -5,8 +5,7 @@ import java.util.Map;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.*;
 import org.objectweb.asm.tree.analysis.AnalyzerException;
 import org.objectweb.asm.tree.analysis.Interpreter;
 
@@ -52,8 +51,27 @@ public class SignInterpreter extends Interpreter<SignValue> implements Opcodes {
   /** {@inheritDoc} */
   @Override
   public SignValue newOperation(final AbstractInsnNode pInstruction) throws AnalyzerException {
-    // TODO Implement me
-    throw new UnsupportedOperationException("Implement me");
+
+    SignTransferRelation tr = new SignTransferRelation();
+    return switch (pInstruction.getOpcode()){
+        case ICONST_M1 -> tr.evaluate(-1);
+        case ICONST_0 -> tr.evaluate(0);
+        case ICONST_1 -> tr.evaluate(1);
+        case ICONST_2 -> tr.evaluate(2);
+        case ICONST_3 -> tr.evaluate(3);
+        case ICONST_4 -> tr.evaluate(4);
+        case ICONST_5 -> tr.evaluate(5);
+        case ILOAD-> SignValue.TOP;
+        case ARRAYLENGTH -> SignValue.ZERO_PLUS;
+        case GETFIELD, GETSTATIC -> "I".equals(((FieldInsnNode) pInstruction).desc) ? SignValue.TOP : SignValue.UNINITIALIZED_VALUE;
+        case BIPUSH, SIPUSH -> tr.evaluate(((IntInsnNode)pInstruction).operand);
+        case LDC -> {
+            LdcInsnNode ldcInsn = (LdcInsnNode)pInstruction;
+            if (ldcInsn.cst instanceof Integer) yield tr.evaluate((Integer) ldcInsn.cst);
+            yield SignValue.UNINITIALIZED_VALUE;
+        }
+        default -> SignValue.UNINITIALIZED_VALUE;
+    };
   }
 
   /** {@inheritDoc} */
