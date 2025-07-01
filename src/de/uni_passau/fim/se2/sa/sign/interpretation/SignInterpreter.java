@@ -182,7 +182,6 @@ public class SignInterpreter extends Interpreter<SignValue> implements Opcodes {
   /** {@inheritDoc} */
   @Override
   public SignValue merge(final SignValue pValue1, final SignValue pValue2) {
-    // TODO Implement me
-    throw new UnsupportedOperationException("Implement me");
+    return pValue1.join(pValue2);
   }
 }
