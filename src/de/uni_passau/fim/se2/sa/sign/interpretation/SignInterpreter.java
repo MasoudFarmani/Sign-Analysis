@@ -77,8 +77,7 @@ public class SignInterpreter extends Interpreter<SignValue> implements Opcodes {
   /** {@inheritDoc} */
   @Override
   public SignValue copyOperation(final AbstractInsnNode pInstruction, final SignValue pValue) {
-    // TODO Implement me
-    throw new UnsupportedOperationException("Implement me");
+    return pValue;
   }
 
   /** {@inheritDoc} */
