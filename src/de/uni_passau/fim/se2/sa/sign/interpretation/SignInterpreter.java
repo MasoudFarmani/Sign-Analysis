@@ -84,8 +84,19 @@ public class SignInterpreter extends Interpreter<SignValue> implements Opcodes {
   @Override
   public SignValue unaryOperation(final AbstractInsnNode pInstruction, final SignValue pValue)
       throws AnalyzerException {
-    // TODO Implement me
-    throw new UnsupportedOperationException("Implement me");
+
+    SignTransferRelation tr = new SignTransferRelation();
+    return switch (pInstruction.getOpcode()){
+        case INEG -> tr.evaluate(TransferRelation.Operation.NEG, pValue);
+        case IALOAD -> SignValue.TOP;
+        case IRETURN -> pValue;
+        case IINC -> {
+            IincInsnNode iinc = (IincInsnNode) pInstruction;
+            int incValue = iinc.incr;
+            yield tr.evaluate(TransferRelation.Operation.ADD, pValue, tr.evaluate(incValue));
+        }
+        default -> SignValue.UNINITIALIZED_VALUE;
+    };
   }
 
   /** {@inheritDoc} */
