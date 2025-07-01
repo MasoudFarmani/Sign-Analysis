@@ -10,6 +10,8 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.analysis.AnalyzerException;
 import org.objectweb.asm.tree.analysis.Interpreter;
 
+import static jdk.internal.org.objectweb.asm.Type.*;
+
 public class SignInterpreter extends Interpreter<SignValue> implements Opcodes {
 
   private final String pClassName;
@@ -40,8 +42,11 @@ public class SignInterpreter extends Interpreter<SignValue> implements Opcodes {
   /** {@inheritDoc} */
   @Override
   public SignValue newValue(final Type pType) {
-    // TODO Implement me
-    throw new UnsupportedOperationException("Implement me");
+    if (pType == null) return SignValue.UNINITIALIZED_VALUE;
+    return switch (pType.getSort()){
+        case INT, BYTE, CHAR, SHORT, BOOLEAN -> SignValue.TOP;
+        default -> SignValue.UNINITIALIZED_VALUE;
+    };
   }
 
   /** {@inheritDoc} */
