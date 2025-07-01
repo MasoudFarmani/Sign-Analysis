@@ -115,8 +115,11 @@ public class SignAnalysisImpl implements SignAnalysis {
 
   private boolean isMaybeDivByZero(
       final AbstractInsnNode pInstruction, final Frame<SignValue> pFrame) {
-    // TODO Implement me
-    throw new UnsupportedOperationException("Implement me");
+    if (pInstruction.getOpcode() == Opcodes.IDIV) {
+      SignValue divisor = pFrame.getStack(pFrame.getStackSize() - 1);
+      return SignValue.isMaybeZero(divisor) && !SignValue.isZero(divisor);
+    }
+    return false;
   }
 
   private boolean isNegativeArrayIndex(
