@@ -44,10 +44,10 @@ public class SignInterpreter extends Interpreter<SignValue> implements Opcodes {
      */
     @Override
     public SignValue newValue(final Type pType) {
-        if (pType == null) return SignValue.UNINITIALIZED_VALUE;
+        if (pType == null) return SignValue.BOTTOM;
         return switch (pType.getSort()) {
             case Type.INT, Type.BYTE, Type.CHAR, Type.SHORT, Type.BOOLEAN -> SignValue.TOP;
-            default -> SignValue.UNINITIALIZED_VALUE;
+            default -> SignValue.BOTTOM;
         };
     }
 
@@ -69,14 +69,14 @@ public class SignInterpreter extends Interpreter<SignValue> implements Opcodes {
             case ILOAD -> SignValue.TOP;
             case ARRAYLENGTH -> SignValue.ZERO_PLUS;
             case GETFIELD, GETSTATIC ->
-                    "I".equals(((FieldInsnNode) pInstruction).desc) ? SignValue.TOP : SignValue.UNINITIALIZED_VALUE;
+                    "I".equals(((FieldInsnNode) pInstruction).desc) ? SignValue.TOP : SignValue.BOTTOM;
             case BIPUSH, SIPUSH -> tr.evaluate(((IntInsnNode) pInstruction).operand);
             case LDC -> {
                 LdcInsnNode ldcInsn = (LdcInsnNode) pInstruction;
                 if (ldcInsn.cst instanceof Integer) yield tr.evaluate((Integer) ldcInsn.cst);
-                yield SignValue.UNINITIALIZED_VALUE;
+                yield SignValue.BOTTOM;
             }
-            default -> SignValue.UNINITIALIZED_VALUE;
+            default -> SignValue.BOTTOM;
         };
     }
 
@@ -105,7 +105,7 @@ public class SignInterpreter extends Interpreter<SignValue> implements Opcodes {
                 int incValue = iinc.incr;
                 yield tr.evaluate(TransferRelation.Operation.ADD, pValue, tr.evaluate(incValue));
             }
-            default -> SignValue.UNINITIALIZED_VALUE;
+            default -> SignValue.BOTTOM;
         };
     }
 
@@ -122,7 +122,7 @@ public class SignInterpreter extends Interpreter<SignValue> implements Opcodes {
             case ISUB -> tr.evaluate(TransferRelation.Operation.SUB, pValue1, pValue2);
             case IMUL -> tr.evaluate(TransferRelation.Operation.MUL, pValue1, pValue2);
             case IDIV -> tr.evaluate(TransferRelation.Operation.DIV, pValue1, pValue2);
-            default -> SignValue.UNINITIALIZED_VALUE;
+            default -> SignValue.BOTTOM;
         };
     }
 
@@ -163,7 +163,7 @@ public class SignInterpreter extends Interpreter<SignValue> implements Opcodes {
             if (returnType.getSort() == Type.INT) return SignValue.TOP;
 
         }
-        return SignValue.UNINITIALIZED_VALUE;
+        return SignValue.BOTTOM;
     }
 
     private SignValue analyzeMethod(MethodNode method) throws AnalyzerException {
