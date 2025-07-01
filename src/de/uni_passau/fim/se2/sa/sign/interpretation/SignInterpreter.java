@@ -6,7 +6,9 @@ import java.util.Map;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.analysis.Analyzer;
 import org.objectweb.asm.tree.analysis.AnalyzerException;
+import org.objectweb.asm.tree.analysis.Frame;
 import org.objectweb.asm.tree.analysis.Interpreter;
 
 import static jdk.internal.org.objectweb.asm.Type.*;
@@ -128,9 +130,47 @@ public class SignInterpreter extends Interpreter<SignValue> implements Opcodes {
   @Override
   public SignValue naryOperation(
       final AbstractInsnNode pInstruction, final List<? extends SignValue> pValues) {
-    // TODO Implement me
-    throw new UnsupportedOperationException("Implement me");
+    var opCode = pInstruction.getOpcode();
+    if (opCode == INVOKESTATIC || opCode == INVOKEVIRTUAL ||
+              opCode == INVOKESPECIAL){
+
+        MethodInsnNode methodInsn = (MethodInsnNode) pInstruction;
+        String methodKey = methodInsn.name + methodInsn.desc;
+        Type returnType = Type.getReturnType(methodInsn.desc);
+        if (pClassName.equals(methodInsn.owner) && returnType.getSort() == Type.INT) {
+            if (methods.containsKey(methodKey)) {
+                try {
+                    return analyzeMethod(methods.get(methodKey));
+                } catch (Exception e) {
+                    return SignValue.TOP;
+                }
+            }
+        }
+        if (returnType.getSort() == Type.INT) return SignValue.TOP;
+
+    }
+    return SignValue.UNINITIALIZED_VALUE;
   }
+
+    private SignValue analyzeMethod(MethodNode method) throws AnalyzerException {
+
+        Analyzer<SignValue> analyzer = new Analyzer<>(new SignInterpreter(pClassName, methods));
+        analyzer.analyze(pClassName, method);
+
+        Frame<SignValue>[] frames = analyzer.getFrames();
+
+        SignValue result = SignValue.BOTTOM;
+        AbstractInsnNode[] instructions = method.instructions.toArray();
+
+        for (int i = 0; i < instructions.length; i++) {
+            if (instructions[i].getOpcode() == IRETURN && frames[i] != null) {
+                SignValue returnValue = frames[i].getStack(frames[i].getStackSize() - 1);
+                result = result.join(returnValue);
+            }
+        }
+
+        return result;
+    }
 
   /** {@inheritDoc} */
   @Override
